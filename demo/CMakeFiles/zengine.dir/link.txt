@@ -1,0 +1,2 @@
+/usr/bin/ar cr lib/DEBUG/libzengine.a  CMakeFiles/zengine.dir/src/main.cpp.o CMakeFiles/zengine.dir/src/state_manager.cpp.o CMakeFiles/zengine.dir/src/platform.cpp.o CMakeFiles/zengine.dir/src/ogre_console.cpp.o CMakeFiles/zengine.dir/src/exception.cpp.o CMakeFiles/zengine.dir/src/ambiance_manager.cpp.o CMakeFiles/zengine.dir/src/root.cpp.o CMakeFiles/zengine.dir/src/ogre_initialiser.cpp.o
+/usr/bin/ranlib lib/DEBUG/libzengine.a

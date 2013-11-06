@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="zDemo" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/zDemo_d" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../resources" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+					<Add directory="../inc/config" />
+					<Add directory="../inc/core" />
+					<Add directory="../inc/init" />
+					<Add directory="../inc/managers" />
+					<Add directory="../inc/states" />
+					<Add directory="../inc/ui" />
+					<Add directory="/usr/local/include/Gorilla" />
+					<Add directory="/usr/local/include/OGRE" />
+					<Add directory="/usr/local/include/OIS" />
+				</Compiler>
+				<Linker>
+					<Add library="zEngine_d" />
+					<Add library="OgreMain_d" />
+					<Add library="OIS_d" />
+					<Add library="Gorilla_d" />
+					<Add library="GL" />
+					<Add directory="../lib/Debug" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/zDemo" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../resources" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="OgreMain" />
+					<Add library="OIS" />
+					<Add library="Gorilla" />
+					<Add library="GL" />
+					<Add library="zEngine" />
+					<Add directory="../lib/Release" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions -std=c++11" />
+			<Add directory="../inc/config" />
+			<Add directory="../inc/core" />
+			<Add directory="../inc/init" />
+			<Add directory="../inc/managers" />
+			<Add directory="../inc/states" />
+			<Add directory="../inc/ui" />
+			<Add directory="/usr/local/include/Gorilla" />
+			<Add directory="/usr/local/include/OGRE" />
+			<Add directory="/usr/local/include/OIS" />
+		</Compiler>
+		<Linker>
+			<Add directory="/usr/local/lib/Gorilla" />
+			<Add directory="/usr/local/lib/OGRE" />
+		</Linker>
+		<Unit filename="src/main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

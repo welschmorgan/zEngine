@@ -1,0 +1,2 @@
+/home/darkboss/dev/engines/zEngine/tests/CMakeFiles/zengine.dir
+/home/darkboss/dev/engines/zEngine/tests/CMakeFiles/zengine_run.dir

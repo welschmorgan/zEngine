@@ -1,0 +1,2 @@
+/root/dev/engines/zEngine/build/CMakeFiles/zEngine.dir
+/root/dev/engines/zEngine/build/demo/CMakeFiles/zdemo.dir
