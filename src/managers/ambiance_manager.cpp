@@ -1,6 +1,6 @@
 #include "ambiance_manager.h"
 
-namespace zsys
+namespace ZSys
 {
     AmbianceManager::AmbianceManager(Root * root)
         : mRoot(root)

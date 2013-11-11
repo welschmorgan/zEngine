@@ -1,10 +1,12 @@
 #include "dev.h"
-#include "config/platform.h"
+#include "platform.h"
+#include <OgreException.h>
+#include "exception.h"
 
-namespace zsys
+namespace ZSys
 {
+    const Ogre::String Dev::LOG_NAME = "./diary.log";
     Dev Dev::mInst;
-    const Ogre::String Dev::LOG_NAME = _T("./dev/diary.log");
     Dev::Dev()
     {
         open_stream();
@@ -13,42 +15,44 @@ namespace zsys
     Dev::~Dev()
     {
     }
+
     Dev& Dev::getSingleton(){ return mInst; }
     Dev* Dev::getSingletonPtr(){ return &mInst; }
 
-    void Dev::treatMessage(const Ogre::String &str, DevMsgType type, bool except_on_critical)
+    void Dev::treatMessage(const Ogre::String &str, DevMsgType type, bool except_on_critical, const Ogre::String &file, const size_t line, const Ogre::String &func)
     {
-        #ifdef DEV_BUILD
+        #ifdef Z_DEV_BUILD
             if (type == DMT_SUCCESS)
                 mStream << "[+] ";
             else if(type == DMT_FAILURE)
                 mStream << "[-] ";
             else if(type == DMT_CRITICAL)
                 mStream << "[CRITICAL] ";
-            else if(type == DMT_CRITICAL)
+            else if(type == DMT_INFO)
                 mStream << "[INFO] ";
+            else
+                mStream << "[UNKNOWN] ";
             mStream << str << std::endl;
             mStream.flush();
             if (except_on_critical && type == DMT_CRITICAL)
-                THROW(Ogre::Exception::ERR_RUNTIME_ERROR, _T("Critical error: ")+str);
+                THROW(Ogre::Exception::ERR_INTERNAL_ERROR, "Critical error: "+str);
         #endif
     }
     void Dev::open_stream()
     {
-#ifdef DEV_BUILD
-        mkdir("./dev", 0);
+#ifdef Z_DEV_BUILD
         unsigned short id = 0;
-        string fname(_T("./dev/developper.log"));
-        std::ifstream ifs(fname.c_str());
-        while (!ifs.is_open())
+        string fname(LOG_NAME);
+        mStream.open(fname.c_str());
+        std::cout << "Trying " << fname << std::endl;
+        while (!mStream.is_open() && id < 100)
         {
-            fname = _T("./dev/developper-")+std::to_string(id)+_T(".log");
-            ifs.open(fname.c_str());
+            fname = LOG_NAME+std::to_string(id)+".log";
+            std::cout << "Trying " << fname << std::endl;
+            mStream.open(fname.c_str());
             id ++;
         }
-        ifs.close();
-        mStream.open(fname);
-        mStream << "Developper build started:" << std::endl;
+        treatMessage("Developper log created");
 #endif
     }
 };

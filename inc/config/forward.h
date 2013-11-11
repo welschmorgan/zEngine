@@ -1,14 +1,18 @@
-#ifndef Z_ROOT_H
-#define Z_ROOT_H
+#ifndef Z_FORWARD_HH
+#define Z_FORWARD_HH
 
 #include "export.h"
 
-namespace zsys
+namespace ZSys
 {
     /**
     * Root class for this engine
     ****************************/
     class Z_API Root;
+    /**
+    * Manages the user inputs
+    ****************************/
+    class Z_API InputSystem;
     /**
     * Manages ambiances, sounds and weather
     ****************************/
@@ -34,6 +38,14 @@ namespace zsys
     * Manages different cameras of the game
     ****************************/
     class Z_API CameraManager;
-};
+    /**
+    * Manages different states of the game
+    ****************************/
+    class Z_API StateManager;
+    /**
+    * Parameters important to ogre, root, main window
+    ****************************/
+    class Z_API OgreParams;
+}
 
 #endif

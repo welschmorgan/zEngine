@@ -2,26 +2,27 @@
 #include <OgreRoot.h>
 #include <OgreRenderWindow.h>
 #include <OgreSceneManager.h>
+#include "input_system.h"
 
-namespace zsys
+namespace ZSys
 {
     namespace   tr
     {
-        string      UserDirection(zsys::UserDirection dir, bool capitalise)
+        string      UserDirection(ZSys::UserDirection dir, bool capitalise)
         {
             static string ret;
             switch(dir)
             {
-            case TD_FORWARD:
+            case UD_FORWARD:
                 ret = string(1, capitalise?'F':'f') + "orward";
                 break;
-            case TD_BACKWARD:
+            case UD_BACKWARD:
                 ret = string(1, capitalise?'B':'b') + "ackward";
                 break;
-            case TD_LEFT:
+            case UD_LEFT:
                 ret = string(1, capitalise?'L':'l') + "eft";
                 break;
-            case TD_RIGHT:
+            case UD_RIGHT:
                 ret = string(1, capitalise?'R':'r') + "ight";
                 break;
             }
@@ -29,10 +30,112 @@ namespace zsys
         }
     };
 
+    /**
+     * Camera
+     */
+    Camera::Camera(CameraMode mode, const string &name, Ogre::Camera * cam)
+        : EnableName(name)
+        , mCam(cam)
+        , mMode(mode)
+    {}
+    Camera::~Camera()
+    {}
+
+    void                Camera::setCamera(Ogre::Camera * cam){ mCam = cam; }
+    Ogre::Camera        *Camera::getCamera(){ return mCam; }
+    const Ogre::Camera  *Camera::getCamera() const{ return mCam; }
+
+    CameraMode          Camera::getMode() const{ return mMode; }
+    void                Camera::setMode( CameraMode mode ){ mMode = mode; }
+
+    void                Camera::move(UserDirection dir, Ogre::Real delta_time, Ogre::Real speed_mult)
+    {
+        if (!mCam)
+            THROW(Ogre::Exception::ExceptionCodes::ERR_INVALID_STATE, "Cannot move, no camera supplied for UserCamera '" + getName()+"'");
+        switch(dir)
+        {
+        case UD_FORWARD:
+            if (mMode == CM_NORMAL)
+                move_forward(delta_time, speed_mult);
+            break;
+        case UD_BACKWARD:
+            if (mMode == CM_NORMAL)
+                move_backward(delta_time, speed_mult);
+            break;
+        case UD_LEFT:
+            if (mMode == CM_NORMAL)
+                move_left(delta_time, speed_mult);
+            break;
+        case UD_RIGHT:
+            if (mMode == CM_NORMAL)
+                move_right(delta_time, speed_mult);
+            break;
+        }
+    }
+
+    void            Camera::move_forward(Ogre::Real delta_time, Ogre::Real speed_mult)
+    {
+        switch (mMode)
+        {
+        case CM_NORMAL:
+            mCam->move(mCam->getDirection() * delta_time * speed_mult);
+            break;
+        case CM_ORBIT:
+            break;
+        case CM_TRACK_FREELOOK:
+            break;
+        case CM_TRACK_FIXED:
+            break;
+        }
+    }
+    void            Camera::move_backward(Ogre::Real delta_time, Ogre::Real speed_mult){
+        switch (mMode)
+        {
+        case CM_NORMAL:
+            mCam->move(-mCam->getDirection() * delta_time * speed_mult);
+            break;
+        case CM_ORBIT:
+            break;
+        case CM_TRACK_FREELOOK:
+            break;
+        case CM_TRACK_FIXED:
+            break;
+        }
+    }
+    void            Camera::move_left(Ogre::Real delta_time, Ogre::Real speed_mult){
+        switch (mMode)
+        {
+        case CM_NORMAL:
+            mCam->move(-mCam->getRight() * delta_time * speed_mult);
+            break;
+        case CM_ORBIT:
+            break;
+        case CM_TRACK_FREELOOK:
+            break;
+        case CM_TRACK_FIXED:
+            break;
+        }}
+    void            Camera::move_right(Ogre::Real delta_time, Ogre::Real speed_mult){
+        switch (mMode)
+        {
+        case CM_NORMAL:
+            mCam->move(mCam->getRight() * delta_time * speed_mult);
+            break;
+        case CM_ORBIT:
+            break;
+        case CM_TRACK_FREELOOK:
+            break;
+        case CM_TRACK_FIXED:
+            break;
+        }
+    }
+
+    /**
+     * Camera Manager
+     */
     CameraManager::CameraManager()
-        : mKbd(nullptr)
-        , mMouse(nullptr)
-        , mActive(nullptr)
+        : mActive(nullptr)
+        , mInputSys(nullptr)
     {
     //ctor
     }
@@ -41,13 +144,13 @@ namespace zsys
     {
     //dtor
     }
-    void CameraManager::activate(Ogre::Camera * cam)
+    void CameraManager::activate(Camera * cam)
     {
         assert(cam && "Invalid camera");
-        assert(!hasCamera(cam) && "Unregistered camera");
+        assert(hasCamera(cam) && "Unregistered camera");
         mActive = cam;
     }
-    bool CameraManager::hasCamera(const Ogre::Camera * cam) const
+    bool CameraManager::hasCamera(const Camera * cam) const
     {
         for(List::const_iterator i=mList.cbegin(); i!=mList.cend(); i++)
             if ((*i) == cam)
@@ -55,39 +158,40 @@ namespace zsys
         return false;
     }
 
-    void CameraManager::create(const OgreParamsPtr& ptr,OIS::Keyboard*k, OIS::Mouse *m)
+    void CameraManager::create(const OgreParamsPtr& ptr, InputSystem * isys)
     {
         assert(ptr->getMainWindow() && "Invalid window");
         if (m_created)
             return ;
 
+        mParams = ptr;
+        Ogre::Camera * defaultCam = nullptr;
         Ogre::RenderWindow * w = ptr->getMainWindow();
         assert(w && "Invalid window");
         Ogre::Viewport * vp = nullptr;
         if (w->getNumViewports() == 0)
         {
-            mActive = mParams->getSceneMgr()->createCamera("SystemCamera");
-            vp = w->addViewport(mActive);
+            defaultCam = mParams->getSceneMgr()->createCamera("SystemCamera");
+            vp = w->addViewport(defaultCam);
         }
         else
         {
             vp = w->getViewport(0);
-            mActive = vp->getCamera();
+            defaultCam = vp->getCamera();
         }
-        if (!mActive)
-            vp = w->addViewport(mActive);
-        assert(k && m && "Invalid Input System");
-        mKbd = k;
-        mMouse = m;
+        if (!defaultCam)
+            vp = w->addViewport(defaultCam);
+        assert(isys && "Invalid Input System");
+        mInputSys = isys;
 
-        mActive->setPosition(Ogre::Vector3(0,10,500));
-        mActive->lookAt(Ogre::Vector3(0,0,0));
-        mActive->setFOVy(Ogre::Radian(Ogre::Degree(45.0f)));
-        mActive->setNearClipDistance(5);
+        defaultCam->setPosition(Ogre::Vector3(0,10,500));
+        defaultCam->lookAt(Ogre::Vector3(0,0,0));
+        defaultCam->setFOVy(Ogre::Radian(Ogre::Degree(45.0f)));
+        defaultCam->setNearClipDistance(5);
 
         if (ptr->getRoot()->getRenderSystem()->getCapabilities()->hasCapability(Ogre::RSC_INFINITE_FAR_PLANE))
-            mActive->setFarClipDistance(0);
-        addCamera(mActive);
+            defaultCam->setFarClipDistance(0);
+        createCamera(defaultCam, CM_NORMAL, true);
 
         Ogre::LogManager::getSingleton().logMessage("CameraManager loaded, handling "+std::to_string(mList.size()), Ogre::LML_TRIVIAL);
         m_created = true;
@@ -96,33 +200,76 @@ namespace zsys
     {
         if (!m_created)
             return ;
+        for (auto i=mList.begin(); i!=mList.end(); i++)
+            delete (*i), (*i) = nullptr;
         mList.clear();
         mActive = nullptr;
         m_created = false;
+        mParams.reset();
     }
 
-    CameraManager::List::const_iterator CameraManager::findCamera(const Ogre::Camera * cam) const
+    CameraManager::List::const_iterator CameraManager::findCamera(const Camera * cam) const
     {
         for(List::const_iterator i=mList.cbegin(); i!=mList.cend(); i++)
             if ((*i) == cam)
                 return i;
         return mList.end();
     }
-    CameraManager::List::iterator CameraManager::findCamera(Ogre::Camera * cam)
+    CameraManager::List::iterator CameraManager::findCamera(Camera * cam)
     {
         for(List::iterator i=mList.begin(); i!=mList.end(); i++)
             if ((*i)== cam)
                 return i;
         return mList.end();
     }
-    void CameraManager::addCamera(Ogre::Camera * cam, bool activate_)
+    Camera *CameraManager::createCamera(Ogre::Camera * ocam, CameraMode mode, bool activate_)
+    {
+        Camera * cam = nullptr;
+        if (!ocam)
+            THROW(Ogre::Exception::ERR_RT_ASSERTION_FAILED, "Invalid Ogre::Camera supplied");
+        try
+        {
+            cam = new Camera(mode, ocam->getName(), ocam);
+            addCamera(cam, activate_);
+        }
+        catch(...)
+        {
+            delete cam, cam = nullptr;
+            throw;
+        }
+        return cam;
+    }
+    Camera                      *CameraManager::getActiveCamera(bool except_on_null){
+        if (!mActive && except_on_null)
+            THROW(Ogre::Exception::ERR_RT_ASSERTION_FAILED, "No active camera found in this manager, activate one first");
+        return mActive;
+    }
+    const Camera                *CameraManager::getActiveCamera(bool except_on_null) const{
+        if (!mActive && except_on_null)
+            THROW(Ogre::Exception::ERR_RT_ASSERTION_FAILED, "No active camera found in this manager, activate one first");
+        return mActive;
+    }
+    Camera *CameraManager::addCamera(Camera * cam, bool activate_)
     {
         if (hasCamera(cam))
             THROW(Ogre::Exception::ERR_DUPLICATE_ITEM, "Camera already registered");
         mList.push_back(cam);
         if (activate_)
             activate(cam);
+        return cam;
     }
     const CameraManager::List& CameraManager::getList() const{ return mList; }
 
+    bool    CameraManager::frameRenderingQueued(const Ogre::FrameEvent& evt)
+    {
+        if (mInputSys->isActionWanted(ACTION_FORWARD))
+            getActiveCamera(true)->move(UD_FORWARD);
+        if (mInputSys->isActionWanted(ACTION_BACKWARD))
+            getActiveCamera(true)->move(UD_BACKWARD);
+        if (mInputSys->isActionWanted(ACTION_STRAFE_LEFT))
+            getActiveCamera(true)->move(UD_LEFT);
+        if (mInputSys->isActionWanted(ACTION_STRAFE_RIGHT))
+            getActiveCamera(true)->move(UD_RIGHT);
+        return true;
+    }
 };

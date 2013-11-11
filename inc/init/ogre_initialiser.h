@@ -1,9 +1,11 @@
-#ifndef OGREINITIALISER_H
-#define OGREINITIALISER_H
+#ifndef Z_OGREINITIALISER_H
+#define Z_OGREINITIALISER_H
 
  #include <OGRE/Ogre.h>
  #include <OIS/OIS.h>
- #include "platform.h"
+#include "input_system.h"
+#include "ogre_console.h"
+
  #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE || OGRE_PLATFORM == OGRE_PLATFORM_IPHONE
  #include <macUtils.h>
  #endif
@@ -20,76 +22,59 @@
 #   define OGRE_PLUGINS_FILE "plugins.cfg"
 #endif
 
-#include "ogre_console.h"
-
-class Z_API OgreInitializer : public Ogre::ConfigFile
+namespace ZSys
 {
-public:
-    OgreInitializer(const Ogre::String &base_path = Ogre::StringUtil::BLANK,
-                    bool create_ = true,
-                    const Ogre::String &plugins = OGRE_PLUGINS_FILE,
-                    const Ogre::String &config = OGRE_CONFIG_FILE,
-                    const Ogre::String &log_ = OGRE_LOG_FILE);
-    virtual ~OgreInitializer();
+    class Z_API OgreInitializer : public Ogre::ConfigFile
+    {
+    public:
+        OgreInitializer(const Ogre::String &base_path = Ogre::StringUtil::BLANK,
+                        bool create_ = true,
+                        const Ogre::String &plugins = OGRE_PLUGINS_FILE,
+                        const Ogre::String &config = OGRE_CONFIG_FILE,
+                        const Ogre::String &log_ = OGRE_LOG_FILE);
+        virtual ~OgreInitializer();
 
-    OgreConsole             *getConsole();
-    const OgreConsole       *getConsole() const;
+        OgreConsole             *getConsole();
+        const OgreConsole       *getConsole() const;
 
-    void parseResourcesConfig(const Ogre::String &name = OGRE_RESOURCES_FILE);
-    void addResourceLocation(const Ogre::String &archName,
-                             const Ogre::String &typeName,
-                             const Ogre::String &secName);
-    void initResourceGroups();
+        void parseResourcesConfig(const Ogre::String &name = OGRE_RESOURCES_FILE);
+        void addResourceLocation(const Ogre::String &archName,
+                                 const Ogre::String &typeName,
+                                 const Ogre::String &secName);
+        void initResourceGroups();
 
-    void                    destroy();
+        void                    destroy();
 
-    void                    createUi();
-    Ogre::Root              *createRoot(const Ogre::String &plugins = OGRE_PLUGINS_FILE,
-                                        const Ogre::String &config = OGRE_CONFIG_FILE,
-                                        const Ogre::String &log_ = OGRE_LOG_FILE);
-    void                    destroyRoot();
+        void                    createUi();
+        Ogre::Root              *createRoot(const Ogre::String &plugins = OGRE_PLUGINS_FILE,
+                                            const Ogre::String &config = OGRE_CONFIG_FILE,
+                                            const Ogre::String &log_ = OGRE_LOG_FILE);
+        void                    destroyRoot();
 
-    Ogre::RenderWindow      *createWindow(bool auto_create=true);
-    Ogre::SceneManager      *createSceneManager(Ogre::SceneType type = Ogre::ST_GENERIC);
-    OIS::InputManager       *createInputSystem();
-    void                    destroyInputSystem();
+        Ogre::RenderWindow      *createWindow(bool auto_create=true);
+        Ogre::SceneManager      *createSceneManager(Ogre::SceneType type = Ogre::ST_GENERIC);
 
-    bool                    handleWindowEvents();
+        size_t                      getWindowHandle() const;
+        const Ogre::String          &getResourcesPath() const;
 
- 	size_t                      getWindowHandle() const;
+        Ogre::Root                  *getRoot();
+        const Ogre::Root            *getRoot() const;
 
- 	bool                        renderOneFrame();
-    const Ogre::String          &getResourcesPath() const;
+        Ogre::RenderWindow          *getWindow();
+        const Ogre::RenderWindow    *getWindow() const;
 
-    OIS::InputManager           *getInputManager();
-    const OIS::InputManager     *getInputManager() const;
+        bool                        isCreated() const;
+    protected:
+        bool                    mCreated;
+        Ogre::String            mResourcesFile,
+                                mResourcesPath;
+        Ogre::Root              *mRoot;
+        Ogre::RenderWindow      *mWindow;
 
-    OIS::Keyboard               *getKeyboard();
-    const OIS::Keyboard         *getKeyboard() const;
+        std::streambuf*         oldCOUTStreamBuf;
+        std::streambuf*         oldCERRStreamBuf;
 
-    OIS::Mouse                  *getMouse();
-    const OIS::Mouse            *getMouse() const;
-
-    Ogre::Root                  *getRoot();
-    const Ogre::Root            *getRoot() const;
-
-    Ogre::RenderWindow          *getWindow();
-    const Ogre::RenderWindow    *getWindow() const;
-
-    bool                        isCreated() const;
-protected:
-    bool                    mCreated;
-    Ogre::String            mResourcesFile,
-                            mResourcesPath;
-    Ogre::Root              *mRoot;
-    Ogre::RenderWindow      *mWindow;
-    OIS::InputManager       *mInputMgr;
-    OIS::Keyboard           *mKeyboard;
-    OIS::Mouse              *mMouse;
-
-    std::streambuf*         oldCOUTStreamBuf;
-    std::streambuf*         oldCERRStreamBuf;
-
-    OgreConsole             *mConsole;
+        OgreConsole             *mConsole;
+    };
 };
 #endif // OGREINITIALISER_H

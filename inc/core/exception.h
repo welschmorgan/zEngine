@@ -5,7 +5,7 @@
 # include <OgreException.h>
 # include "platform.h"
 
-namespace zsys
+namespace ZSys
 {
     class Z_API exception
         : public std::runtime_error
@@ -33,8 +33,8 @@ namespace zsys
     };
 };
 
-# define THROW(code,msg) throw zsys::exception(code,msg,__FILE__,__FUNCTION__,__LINE__);
-# define CATCH_BASE catch(const zsys::exception &e)
+# define THROW(code,msg) throw ZSys::exception(code,msg,__FILE__,__FUNCTION__,__LINE__);
+# define CATCH_BASE catch(const ZSys::exception &e)
 # define CATCH_OGRE catch(const Ogre::Exception &e)
 # define CATCH_ALL catch(...)
 # define ERR_ALL() _T("Unknown error happened")

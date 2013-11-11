@@ -1,7 +1,7 @@
 #ifndef SMART_PTR_HPP
 #define SMART_PTR_HPP
 
-namespace zsys
+namespace ZSys
 {
 	template<typename T>
 	class smart_pol

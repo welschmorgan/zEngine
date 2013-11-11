@@ -7,10 +7,6 @@
 #include "forward.h"
 #include "export.h"
 #include <OgreString.h>
-/**
- * Configures the debug build
- */
-#define DEBUG_BUILD() (defined(OGRE_DEBUG_MODE) && OGRE_DEBUG_MODE == 1)
 
 /**
  * Configures the platform we're on
@@ -72,21 +68,21 @@
 #	define OGRE_ARCHITECTURE_STRING "Unknown Architecture"
 #endif
 
-
 /**
  * Configures the unicode
  */
-#define UNICODE_BUILD() ((defined(OGRE_UNICODE_SUPPORT) && OGRE_UNICODE_SUPPORT == 1) || defined(UNICODE) || defined(_UNICODE) || defined(UNICODE_))
-#if UNICODE_BUILD()
+#define Z_USES_UNICODE OGRE_UNICODE_SUPPORT
+
+#if Z_USES_UNICODE == 1
 #   define OGRE_WCHAR_T_STRINGS
 #   define _T(x) L ## x
 #else
 #   define _T(x) x
 #endif
 
-namespace zsys
+namespace ZSys
 {
-#if UNICODE_BUILD()
+#if Z_USES_UNICODE == 1
     typedef char                char_t;
 #else
     typedef wchar_t             char_t;
@@ -96,10 +92,20 @@ namespace zsys
 
     typedef Ogre::ColourValue color;
 
-	FORCEINLINE std::wstring mb_to_iso(const std::string & str);
-	FORCEINLINE std::string iso_to_mb(const std::wstring & str);
-	FORCEINLINE string getBuildInformations();
-    FORCEINLINE const Ogre::String &getOgrePlatform(void);
-};
+	Z_API_C FORCEINLINE std::wstring mb_to_iso(const std::string & str);
+	Z_API_C FORCEINLINE std::string iso_to_mb(const std::wstring & str);
+	Z_API_C FORCEINLINE string getBuildInformations();
+    Z_API_C FORCEINLINE const Ogre::String &getOgrePlatform(void);
+}
+
+#include "dev.h"
+
+#if defined(Z_DEBUG_BUILD)
+#define Z_LOG(msg) Ogre::LogManager::getSingleton().logMessage(msg);
+#elif defined(Z_DEV_BUILD)
+#define Z_LOG(msg) DEV_INFO(msg)
+#else
+#define Z_LOG(msg)
+#endif
 
 #endif

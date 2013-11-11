@@ -3,7 +3,7 @@
 
 #include "platform.h"
 
-namespace zsys
+namespace ZSys
 {
     struct Z_API    EnableName
     {

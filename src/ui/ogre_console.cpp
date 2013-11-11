@@ -1,6 +1,8 @@
 #include "ogre_console.h"
 #include <OgreException.h>
 
+namespace ZSys
+{
 OgreConsole::OgreConsole(bool create_now, Ogre::RenderWindow * win)
 {
     m_silverback = nullptr;
@@ -49,3 +51,4 @@ void OgreConsole::create(Ogre::RenderWindow * win)
 
 
 }
+};

@@ -10,18 +10,19 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     "MinSizeRel" "RelWithDebInfo")
 endif()
 
-set(DBG_FLAGS, -g)
+set(DBG_FLAGS -g)
+set(DEV_FLAGS -DDEV_BUILD)
+set(ARCH_TYPE x64)
 
 if(CMAKE_BUILD_TYPE STREQUAL "DEBUG")
-	list( APPEND CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS} ${DBG_FLAGS}")
+	list( APPEND CMAKE_CXX_FLAGS "-std=c++11 ${DEV_FLAGS} ${CMAKE_CXX_FLAGS} ${DBG_FLAGS}")
 else()
-	list( APPEND CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+	list( APPEND CMAKE_CXX_FLAGS "-std=c++11 ${DEV_FLAGS} ${CMAKE_CXX_FLAGS}")
 endif()
 
 #Project Decl.
 project(zengine)
-add_definitions(${COMPILE_FLAGS})
-set(LIBRARY_OUTPUT_PATH lib/${CMAKE_BUILD_TYPE})
+set(LIBRARY_OUTPUT_PATH lib/${ARCH_TYPE}/${CMAKE_BUILD_TYPE})
 
 if(NOT OGRE_INCLUDE_DIR)
   message(STATUS "Setting Ogre include directory as none specified.")
@@ -65,11 +66,12 @@ include_directories(inc/config)
 include_directories(inc/ui)
 include_directories(inc/managers)
 
-link_directories(${GORILLA_LIBRARY_DIR})
 if(CMAKE_BUILD_TYPE STREQUAL "DEBUG")
-link_directories(${ZENGINE_LIBRARY_DIR}/Debug)
+set(BUILD_TYPE_POSTFIX _d)
+link_directories(${ZENGINE_LIBRARY_DIR}/${ARCH_TYPE}/Debug)
 elseif()
-link_directories(${ZENGINE_LIBRARY_DIR}/Release)
+set(BUILD_TYPE_POSTFIX )
+link_directories(${ZENGINE_LIBRARY_DIR}/${ARCH_TYPE}/Release)
 endif()
 
 file(
@@ -100,19 +102,19 @@ add_subdirectory(tools)
 
 #Library
 add_library(
-	zEngine
+	zEngine${BUILD_TYPE_POSTFIX}
 	STATIC
 	${source_files}
 )
 
 #Library links
 target_link_libraries(
-	zEngine
+	zEngine${BUILD_TYPE_POSTFIX}
 	OgreMain_d
 	OIS_d
 	Gorilla_d	
 )
 
 
-install (TARGETS zEngine DESTINATION lib/${CMAKE_BUILD_TYPE})
+install (TARGETS zEngine${BUILD_TYPE_POSTFIX} DESTINATION lib/${CMAKE_BUILD_TYPE})
 install (FILES ${inc_files} DESTINATION include)

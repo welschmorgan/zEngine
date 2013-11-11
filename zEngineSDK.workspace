@@ -2,6 +2,8 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="zEngineSDK">
 		<Project filename="zEngine.cbp" />
-		<Project filename="demo/zDemo.cbp" />
+		<Project filename="demo/zDemo.cbp">
+			<Depends filename="zEngine.cbp" />
+		</Project>
 	</Workspace>
 </CodeBlocks_workspace_file>

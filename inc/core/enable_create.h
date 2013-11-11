@@ -3,7 +3,7 @@
 
 #include "export.h"
 
-namespace zsys
+namespace ZSys
 {
     struct Z_API                 IEnableCreate
     {

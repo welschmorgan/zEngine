@@ -47,21 +47,19 @@ if(NOT GORILLA_LIBRARY_DIR)
   set(GORILLA_LIBRARY_DIR "/usr/local/lib/Gorilla" CACHE STRING "GORILLA lib dir." FORCE)
 endif()
 
-
-set(DBG_FLAGS, -g)
+set(DBG_FLAGS -g)
+set(DEV_FLAGS -DDEV_BUILD)
+set(ARCH_TYPE x64)
 
 if(CMAKE_BUILD_TYPE STREQUAL "DEBUG")
-	list( APPEND CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS} ${DBG_FLAGS}")
+	list(APPEND CMAKE_CXX_FLAGS "-std=c++11 ${DEV_FLAGS} ${CMAKE_CXX_FLAGS} ${DBG_FLAGS}")
 else()
-	list( APPEND CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+	list(APPEND CMAKE_CXX_FLAGS "-std=c++11 ${DEV_FLAGS} ${CMAKE_CXX_FLAGS}")
 endif()
-set(COMPILE_FLAGS, -std=c++11)
 
 #Project Decl.
-project(zdemo)
-set(EXECUTABLE_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
-
-add_definitions(${COMPILE_FLAGS})
+project(zDemo)
+set(EXECUTABLE_OUTPUT_PATH bin/${ARCH_TYPE}/${CMAKE_BUILD_TYPE})
 
 #Needs OGRE
 
@@ -77,13 +75,16 @@ include_directories(${ZENGINE_INCLUDE_DIR}/config)
 include_directories(${ZENGINE_INCLUDE_DIR}/ui)
 include_directories(${ZENGINE_INCLUDE_DIR}/managers)
 
-link_directories(${ZENGINE_LIBRARY_DIR}/${CMAKE_BUILD_TYPE})
+link_directories(${ZENGINE_LIBRARY_DIR}/${ARCH_TYPE}/${CMAKE_BUILD_TYPE})
 link_directories(${OGRE_LIBRARY_DIR}/${CMAKE_BUILD_TYPE})
 link_directories(${OIS_LIBRARY_DIR}/${CMAKE_BUILD_TYPE})
 link_directories(${GORILLA_LIBRARY_DIR})
+
 if(CMAKE_BUILD_TYPE STREQUAL "DEBUG")
+set(BUILD_TYPE_POSTFIX _d)
 link_directories(${ZENGINE_LIBRARY_DIR}/Debug)
 elseif()
+set(BUILD_TYPE_POSTFIX )
 link_directories(${ZENGINE_LIBRARY_DIR}/Release)
 endif()
 
@@ -96,45 +97,39 @@ message(STATUS "OGRE inc is: "${OGRE_INCLUDE_DIR})
 message(STATUS "OIS Lib inc is: "${OIS_INCLUDE_DIR})
 message(STATUS "Gorilla inc dir is: "${GORILLA_INCLUDE_DIR})
 message(STATUS "ZEngine inc dir is: "${ZENGINE_INCLUDE_DIR})
-
+message(STATUS "Building for architecture: "${ARCH_TYPE})
 
 file(
 	GLOB_RECURSE
 	inc_files
-	inc/core/*
-	inc/states/*
-	inc/init/*
-	inc/config/*
-	inc/ui/*
-	inc/managers/*
+	${ZENGINE_INCLUDE_DIR}/inc/core/*
+	${ZENGINE_INCLUDE_DIR}/inc/states/*
+	${ZENGINE_INCLUDE_DIR}/inc/init/*
+	${ZENGINE_INCLUDE_DIR}/inc/config/*
+	${ZENGINE_INCLUDE_DIR}/inc/ui/*
+	${ZENGINE_INCLUDE_DIR}/inc/managers/*
 )
 file(
 	GLOB_RECURSE
 	source_files
 	src/*
-	src/core/*
-	src/states/*
-	src/init/*
-	src/config/*
-	src/ui/*
-	src/managers/*
 	${inc_files}
 )
 
 #Library
 add_executable(
-	zdemo
+	zDemo${BUILD_TYPE_POSTFIX}
 	${source_files}
 )
 
 #Library links
 target_link_libraries(
-	zdemo
-	zEngine_d
+	zDemo${BUILD_TYPE_POSTFIX}
+	zEngine${BUILD_TYPE_POSTFIX}
 	OgreMain_d
 	OIS_d
 	Gorilla_d
 )
 
-install (TARGETS zdemo DESTINATION bin/${CMAKE_BUILD_TYPE})
+install (TARGETS zDemo${BUILD_TYPE_POSTFIX} DESTINATION bin/${ARCH_TYPE}/${CMAKE_BUILD_TYPE})
 install (FILES ${inc_files} DESTINATION include)

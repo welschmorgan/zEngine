@@ -4,24 +4,28 @@
 	<ExampleApplication.h>
 	"windows.h"
 
-1383694647 source:/home/darkboss/dev/engines/zEngine/demo/src/main.cpp
+1384088559 source:/home/darkboss/dev/engines/zEngine/demo/src/main.cpp
 	<iostream>
 	"root.h"
+	"dev.h"
+	"states.h"
+	"state_manager.h"
 
-1383649166 /home/darkboss/dev/engines/zEngine/inc/init/ogre_initialiser.h
+1383921337 /home/darkboss/dev/engines/zEngine/inc/init/ogre_initialiser.h
 	<OGRE/Ogre.h>
 	<OIS/OIS.h>
-	"platform.h"
-	<macUtils.h>
+	"input_system.h"
 	"ogre_console.h"
+	<macUtils.h>
 
-1383646334 /home/darkboss/dev/engines/zEngine/inc/config/platform.h
+1384088917 /home/darkboss/dev/engines/zEngine/inc/config/platform.h
 	<OgrePlatform.h>
 	"version.h"
 	"defs.h"
 	"forward.h"
 	"export.h"
 	<OgreString.h>
+	"dev.h"
 
 1346563635 /usr/local/include/OGRE/OgrePlatform.h
 	"OgreConfig.h"
@@ -30,11 +34,11 @@
 1346563635 /usr/local/include/OGRE/OgreConfig.h
 	"OgreBuildSettings.h"
 
-1383507091 /usr/local/include/OGRE/OgreBuildSettings.h
+1383830832 /usr/local/include/OGRE/OgreBuildSettings.h
 
-1383429197 /home/darkboss/dev/engines/zEngine/inc/config/version.h
+1384112430 /home/darkboss/dev/engines/zEngine/inc/config/version.h
 
-1383646391 /home/darkboss/dev/engines/zEngine/inc/config/defs.h
+1383913647 /home/darkboss/dev/engines/zEngine/inc/config/defs.h
 
 1346563635 /usr/local/include/OGRE/OgreString.h
 	"OgrePrerequisites.h"
@@ -174,14 +178,16 @@
 	<tr1/unordered_map>
 	<ext/hash_map>
 
-1383652412 /home/darkboss/dev/engines/zEngine/inc/config/forward.h
+1384082923 /home/darkboss/dev/engines/zEngine/inc/config/forward.h
 	"export.h"
 
-1383646425 /home/darkboss/dev/engines/zEngine/inc/config/export.h
+1383914961 /home/darkboss/dev/engines/zEngine/inc/config/export.h
+	"defs.h"
+	<OgrePlatform.h>
 
-1383649255 /home/darkboss/dev/engines/zEngine/inc/ui/ogre_console.h
+1383828237 /home/darkboss/dev/engines/zEngine/inc/ui/ogre_console.h
 	"Gorilla.h"
-	"platform.h"
+	"export.h"
 
 1383424844 /usr/local/include/Gorilla/Gorilla.h
 	"OGRE/Ogre.h"
@@ -189,15 +195,15 @@
 1383688352 source:/home/darkboss/dev/engines/zEngine/src/core/enable_name.cpp
 	"enable_name.h"
 
-1383688362 /home/darkboss/dev/engines/zEngine/inc/core/enable_name.h
+1383782005 /home/darkboss/dev/engines/zEngine/inc/core/enable_name.h
 	"platform.h"
 
-1383685246 /home/darkboss/dev/engines/zEngine/inc/core/root.h
+1384082963 /home/darkboss/dev/engines/zEngine/inc/core/root.h
 	<OgreRoot.h>
 	<memory>
 	"platform.h"
 	"ogre_initialiser.h"
-	"camera_manager.h"
+	"ogre_params.h"
 
 1346563635 /usr/local/include/OGRE/OgreRoot.h
 	"OgrePrerequisites.h"
@@ -902,27 +908,104 @@
 	"OgreAny.h"
 	"OgreSharedPtr.h"
 
-1383696889 /home/darkboss/dev/engines/zEngine/inc/core/camera_manager.h
+1383902928 /home/darkboss/dev/engines/zEngine/inc/core/camera_manager.h
 	"platform.h"
 	"exception.h"
 	<vector>
 	<OgreCamera.h>
-	<OIS/OISInputManager.h>
-	<OIS/OISKeyboard.h>
-	<OIS/OISMouse.h>
 	"ogre_params.h"
 	"enable_create.h"
 	"enable_name.h"
+	"input_system.h"
+	<OgreRoot.h>
+	<OIS/OISInputManager.h>
+	<OIS/OISKeyboard.h>
+	<OIS/OISMouse.h>
 
-1383652024 /home/darkboss/dev/engines/zEngine/inc/core/exception.h
+1383780170 /home/darkboss/dev/engines/zEngine/inc/core/exception.h
 	<stdexcept>
 	<OgreException.h>
 	"platform.h"
 
-1383694825 /home/darkboss/dev/engines/zEngine/inc/core/ogre_params.h
+1383780170 /home/darkboss/dev/engines/zEngine/inc/core/ogre_params.h
 	<memory>
 	"platform.h"
 
-1383688467 /home/darkboss/dev/engines/zEngine/inc/core/enable_create.h
+1383780170 /home/darkboss/dev/engines/zEngine/inc/core/enable_create.h
 	"export.h"
+
+1383987840 /home/darkboss/dev/engines/zEngine/inc/core/input_system.h
+	"ogre_improved_config_file.h"
+	"enable_create.h"
+	<OIS/OIS.h>
+	<OgreRenderWindow.h>
+	<OgreFrameListener.h>
+	"exception.h"
+
+1384087140 /home/darkboss/dev/engines/zEngine/inc/core/ogre_improved_config_file.h
+	<OgrePrerequisites.h>
+	<OgreConfigFile.h>
+
+1346563635 /usr/local/include/OGRE/OgreConfigFile.h
+	"OgrePrerequisites.h"
+	"OgreString.h"
+	"OgreStringVector.h"
+	"OgreIteratorWrappers.h"
+	"OgreDataStream.h"
+
+1346563635 /usr/local/include/OGRE/OgreRenderWindow.h
+	"OgrePrerequisites.h"
+	"OgreRenderTarget.h"
+
+1383943336 /home/darkboss/dev/engines/zEngine/inc/core/dev.h
+	"platform.h"
+	<fstream>
+
+1383424844 /home/darkboss/dev/engines/zEngine/inc/Gorilla.h
+	"OGRE/Ogre.h"
+
+1384008008 /home/darkboss/dev/engines/zEngine/inc/managers/input_system.h
+	"ogre_improved_config_file.h"
+	"enable_create.h"
+	<OIS/OIS.h>
+	<OgreRenderWindow.h>
+	<OgreFrameListener.h>
+	"exception.h"
+	"input_action.h"
+
+1384097255 /home/darkboss/dev/engines/zEngine/inc/managers/input_action.h
+	<vector>
+	<OIS/OISKeyboard.h>
+	<OIS/OISMouse.h>
+	"platform.h"
+	"forward.h"
+
+1384086900 /home/darkboss/dev/engines/zEngine/inc/core/states.h
+	"mainmenustate.h"
+
+1384132914 /home/darkboss/dev/engines/zEngine/inc/states/mainmenustate.h
+	"state.h"
+	"Gorilla.h"
+	"enable_create.h"
+	"enable_name.h"
+	"widgets.h"
+
+1384097173 /home/darkboss/dev/engines/zEngine/inc/core/state.h
+	"platform.h"
+	"ogre_params.h"
+
+1384093695 /home/darkboss/dev/engines/zEngine/inc/managers/state_manager.h
+	"platform.h"
+	"enable_create.h"
+	"ogre_params.h"
+	"state.h"
+	<OgreFrameListener.h>
+	<stack>
+
+1384212852 /home/darkboss/dev/engines/zEngine/inc/ui/widgets.h
+	"Gorilla.h"
+	"platform.h"
+	"enable_create.h"
+	"enable_name.h"
+	<functional>
 

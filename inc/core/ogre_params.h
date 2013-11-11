@@ -5,7 +5,7 @@
 #include <memory>
 #include "platform.h"
 
-namespace zsys
+namespace ZSys
 {
     class Z_API OgreParams
     {

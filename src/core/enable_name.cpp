@@ -1,6 +1,6 @@
 #include "enable_name.h"
 
-namespace zsys
+namespace ZSys
 {
     EnableName::EnableName(const string &name) : m_name(name){}
     EnableName::~EnableName(){}

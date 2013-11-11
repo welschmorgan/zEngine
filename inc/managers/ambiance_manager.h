@@ -3,7 +3,7 @@
 
 #include "root.h"
 
-namespace zsys
+namespace ZSys
 {
     class Z_API AmbianceManager
     {

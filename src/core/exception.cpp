@@ -1,6 +1,6 @@
-#include "core/exception.h"
+#include "exception.h"
 
-namespace zsys
+namespace ZSys
 {
     exception::exception(const int code,
                          const Ogre::String &msg,
@@ -8,10 +8,11 @@ namespace zsys
                          const Ogre::String &func,
                          const size_t line)
     : std::runtime_error(getFull().c_str())
-    , mMessage(msg)
-    , mFile(file)
     , mLine(line)
+    , mMessage(msg)
     , mFunction(func)
+    , mFile(file)
+    , mCode(code)
     {
         //ctor
     }
